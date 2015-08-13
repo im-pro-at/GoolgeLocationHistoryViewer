@@ -82,6 +82,8 @@
 			console.log(""+locations.length+" Location laoded");
 			$("#init").css("display","none");
 			$("#website").css("display","block");
+			
+			setTimeout(function(){ google.maps.event.trigger(myMap, "resize"); }, 1000);
 		}
 		
 		//Load data
