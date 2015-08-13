@@ -35,9 +35,6 @@
 		
 		//init user interface 
 		function init(){
-			console.log(""+locations.length+" Location laoded");
-			$("#init").css("display","none");
-			$("#website").css("display","block");
 
 			//Sort be Time:
 			locations.sort(function (a,b) {
@@ -82,6 +79,9 @@
 				}
 			}
 			
+			console.log(""+locations.length+" Location laoded");
+			$("#init").css("display","none");
+			$("#website").css("display","block");
 		}
 		
 		//Load data
