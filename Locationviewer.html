@@ -116,8 +116,9 @@
 			
 			//Center Path:
 			var bounds = new google.maps.LatLngBounds();
-			path.getPath().forEach(function(e){bounds.extend(e);});         
-			map.fitBounds(bounds);
+			path.getPath().forEach(function(e){bounds.extend(e);});    
+			if($('#cb').is(':checked'))
+				map.fitBounds(bounds);
 			
 			//Create slider:
 			$("#slider").slider({
@@ -197,6 +198,7 @@
 							">
 					<div id="search" style="display:inline">
 					<button type="button" id="berechnen" onclick="search(); return false;">Search in Selected Mapview</button>
+					<input id="cb" type="checkbox" />
 					</div>
 					<div id="info" style="display:inline">
 						
