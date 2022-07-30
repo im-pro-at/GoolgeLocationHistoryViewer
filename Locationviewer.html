@@ -6,6 +6,11 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
   <script>
 		var SCALAR_E7 = 0.0000001;
+		
+		const toTimestamp = (strDate) => {  
+		  const dt = new Date(strDate).getTime();  
+		  return dt;  
+		} 
 
 		function pad(num, size) {
 			var s = num+"";
@@ -20,9 +25,21 @@
 			var count=0;
 			for(var i=0;i<inputs.length;i++){
 				var reader = new FileReader();
-				reader.onload = function(e){
+				reader.onloadend = function(e){
 					count++;
-					locations=locations.concat(JSON.parse(e.target.result).locations);
+					console.log(e.target)
+					console.log(e.target.result)
+					locations_=JSON.parse(e.target.result).locations;
+					for(var i=0;i<locations_.length;i++){
+					  loc={};
+					  loc.timestampMs= toTimestamp(locations_[i].timestamp);
+					  loc.latitudeE7= locations_[i].latitudeE7;
+					  loc.longitudeE7= locations_[i].longitudeE7;
+					  loc.accuracy= locations_[i].accuracy;
+					  locations.push(loc);
+					}
+					console.log(locations);
+					
 					if (count==inputs.length)
 					{
 						//all Files loaded!
@@ -35,6 +52,9 @@
 		
 		//init user interface 
 		function init(){
+			console.log(""+locations.length+" Location laoded");
+			$("#init").css("display","none");
+			$("#website").css("display","block");
 
 			//Sort be Time:
 			locations.sort(function (a,b) {
@@ -53,6 +73,7 @@
 			var count=0;
 			for(var i=0;i<locations.length;i++){
 				var date = new Date(1*locations[i].timestampMs);
+				console.log(date)
 				count++;
 				if(	year!=date.getFullYear() || 
 					month!=date.getMonth() ||
@@ -79,11 +100,6 @@
 				}
 			}
 			
-			console.log(""+locations.length+" Location laoded");
-			$("#init").css("display","none");
-			$("#website").css("display","block");
-			
-			setTimeout(function(){ google.maps.event.trigger(map, "resize"); }, 1000);
 		}
 		
 		//Load data
@@ -116,9 +132,8 @@
 			
 			//Center Path:
 			var bounds = new google.maps.LatLngBounds();
-			path.getPath().forEach(function(e){bounds.extend(e);});    
-			if($('#cb').is(':checked'))
-				map.fitBounds(bounds);
+			path.getPath().forEach(function(e){bounds.extend(e);});         
+			map.fitBounds(bounds);
 			
 			//Create slider:
 			$("#slider").slider({
@@ -167,7 +182,7 @@
 <body>
 
 	<div id='init'>
-		<p>Select all the .json Files you want to load:</p>
+		<p>Select all File to load:</p>
 		<input type='file' multiple="multiple" onchange='openFile(event)'><br>
 	</div>
 	
@@ -198,7 +213,6 @@
 							">
 					<div id="search" style="display:inline">
 					<button type="button" id="berechnen" onclick="search(); return false;">Search in Selected Mapview</button>
-					 Autocenter <input id="cb" type="checkbox" checked/>
 					</div>
 					<div id="info" style="display:inline">
 						
@@ -259,6 +273,12 @@
 		  </tr>
 		</table>
 	</div>	
+	
+	
 
+	
+
+
+	
 </body>
 </html>
